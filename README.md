@@ -26,22 +26,40 @@ Compatible with both **OpenCode** (CLI AI coding agent) and **OpenChamber** (GUI
 
 ## Quick Start (1-Minute Setup)
 
-Run the setup CLI from your project directory:
+Run the setup CLI from your project directory (with **Bun** or **npx**):
 
 ```bash
+# Using Bun (Recommended for OpenCode / OpenChamber)
+bunx opencode-freeinference setup
+
+# Or using npx
 npx opencode-freeinference setup
 ```
 
 To configure **globally** for all projects (`~/.config/opencode/opencode.json`):
 
 ```bash
+bunx opencode-freeinference setup --global
+# or
 npx opencode-freeinference setup --global
 ```
 
 You can also pass your API key directly during setup:
 
 ```bash
-npx opencode-freeinference setup --key your_freeinference_api_key
+bunx opencode-freeinference setup --key your_freeinference_api_key
+```
+
+### Installation
+
+You can install `opencode-freeinference` as a plugin into your project:
+
+```bash
+# Using Bun (Recommended)
+bun add opencode-freeinference
+
+# Or using npm
+npm install opencode-freeinference
 ```
 
 ---
@@ -168,17 +186,17 @@ You can customize plugin behavior in `opencode.json`:
 The CLI utility provides commands to manage and test your FreeInference setup:
 
 ```bash
-# Run setup tool
-npx opencode-freeinference setup [options]
+# Run setup tool (using bunx or npx)
+bunx opencode-freeinference setup [options]
 
 # List currently discovered chat models
-npx opencode-freeinference list-models
+bunx opencode-freeinference list-models
 
 # Test API connectivity and response latency
-npx opencode-freeinference test-connection
+bunx opencode-freeinference test-connection
 
 # View help
-npx opencode-freeinference help
+bunx opencode-freeinference help
 ```
 
 ### CLI Options
