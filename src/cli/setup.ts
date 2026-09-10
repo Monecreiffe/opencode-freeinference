@@ -34,25 +34,38 @@ export function resolveConfigPath(options: SetupOptions = {}): string {
     return path.resolve(options.configPath);
   }
 
+  const globalDir = path.join(os.homedir(), ".config", "opencode");
+  const globalCandidates = [
+    path.join(globalDir, "opencode.jsonc"),
+    path.join(globalDir, "opencode.json"),
+  ];
+
   if (options.global) {
-    // Standard OpenCode global config location: ~/.config/opencode/opencode.json
-    return path.join(os.homedir(), ".config", "opencode", "opencode.json");
+    for (const p of globalCandidates) {
+      if (fs.existsSync(p)) return p;
+    }
+    return globalCandidates[1]!;
   }
 
-  // Look in current directory first
-  const localPath = path.resolve(process.cwd(), "opencode.json");
-  if (fs.existsSync(localPath)) {
-    return localPath;
+  // Look in current directory (root or .opencode)
+  const localCandidates = [
+    path.resolve(process.cwd(), "opencode.jsonc"),
+    path.resolve(process.cwd(), "opencode.json"),
+    path.resolve(process.cwd(), ".opencode", "opencode.jsonc"),
+    path.resolve(process.cwd(), ".opencode", "opencode.json"),
+  ];
+
+  for (const p of localCandidates) {
+    if (fs.existsSync(p)) return p;
   }
 
   // Check global config if local doesn't exist
-  const globalPath = path.join(os.homedir(), ".config", "opencode", "opencode.json");
-  if (fs.existsSync(globalPath)) {
-    return globalPath;
+  for (const p of globalCandidates) {
+    if (fs.existsSync(p)) return p;
   }
 
   // Default to local opencode.json
-  return localPath;
+  return localCandidates[1]!;
 }
 
 /**
