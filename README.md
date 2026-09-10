@@ -24,42 +24,58 @@ Compatible with both **OpenCode** (CLI AI coding agent) and **OpenChamber** (GUI
 
 ---
 
-## Quick Start (1-Minute Setup)
+## Installation & Quick Start
 
-Run the setup CLI from your project directory (with **Bun** or **npx**):
+### Method A: 1-Command Setup (via bunx or npx)
+
+Configure OpenCode or OpenChamber globally with a single command:
 
 ```bash
 # Using Bun (Recommended for OpenCode / OpenChamber)
-bunx opencode-freeinference setup
+bunx opencode-freeinference setup --global
 
 # Or using npx
-npx opencode-freeinference setup
-```
-
-To configure **globally** for all projects (`~/.config/opencode/opencode.json`):
-
-```bash
-bunx opencode-freeinference setup --global
-# or
 npx opencode-freeinference setup --global
 ```
 
 You can also pass your API key directly during setup:
 
 ```bash
-bunx opencode-freeinference setup --key your_freeinference_api_key
+bunx opencode-freeinference setup --global --key your_freeinference_api_key
 ```
 
-### Installation
+---
 
-You can install `opencode-freeinference` as a plugin into your project:
+### Method B: Install Directly from GitHub
+
+You can also install and use the plugin directly from this GitHub repository without waiting for npm:
 
 ```bash
-# Using Bun (Recommended)
-bun add opencode-freeinference
+# Install directly from GitHub using Bun
+bun add github:Monecreiffe/opencode-freeinference
 
 # Or using npm
-npm install opencode-freeinference
+npm install github:Monecreiffe/opencode-freeinference
+```
+
+Add it to your `opencode.json` or `~/.config/opencode/opencode.jsonc`:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "github:Monecreiffe/opencode-freeinference"
+  ]
+}
+```
+
+Or clone and run the setup CLI locally:
+
+```bash
+git clone https://github.com/Monecreiffe/opencode-freeinference.git
+cd opencode-freeinference
+bun install
+bun ./bin/cli.js setup --global
 ```
 
 ---
