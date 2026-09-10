@@ -1,5 +1,6 @@
 import {
   handleSetupCommand,
+  handleStatusCommand,
   handleListModelsCommand,
   handleTestConnectionCommand,
   printHelp,
@@ -11,6 +12,8 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 
   if (!command || command === "setup") {
     await handleSetupCommand(restArgs);
+  } else if (command === "status" || command === "doctor" || command === "check") {
+    await handleStatusCommand();
   } else if (command === "list-models" || command === "models") {
     await handleListModelsCommand(restArgs);
   } else if (command === "test-connection" || command === "test") {

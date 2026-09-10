@@ -1,4 +1,5 @@
-import { runSetup, type SetupOptions } from "./setup.js";
+import fs from "node:fs";
+import { runSetup, resolveConfigPath, type SetupOptions } from "./setup.js";
 import { discoverFreeInferenceModels, resolveApiKey } from "../discovery.js";
 import { DEFAULT_BASE_URL, DEFAULT_API_KEY_ENV } from "../defaults.js";
 
@@ -166,30 +167,82 @@ export async function handleTestConnectionCommand(args: string[]): Promise<void>
   }
 }
 
+export async function handleStatusCommand(): Promise<void> {
+  console.log("\n🏥 Checking FreeInference & OpenCode status...\n");
+
+  // 1. Config path check
+  const configPath = resolveConfigPath({});
+  const exists = fs.existsSync(configPath);
+  console.log(`📁 Config File:  ${configPath}`);
+  console.log(`   Status:       ${exists ? "✅ Found" : "❌ Not found (run setup to create)"}`);
+
+  if (exists) {
+    try {
+      const raw = fs.readFileSync(configPath, "utf-8");
+      const cfg = JSON.parse(
+        raw.replace(/^\s*\/\/.*$/gm, "").replace(/\/\*[\s\S]*?\*\//g, "").replace(/,\s*([}\]])/g, "$1")
+      );
+      const hasPlugin = (cfg.plugin || []).some(
+        (p: any) => p === "opencode-freeinference" || (Array.isArray(p) && p[0] === "opencode-freeinference")
+      );
+      const hasProvider = !!cfg.provider?.freeinference;
+
+      console.log(`   Plugin:       ${hasPlugin ? "✅ Registered" : "⚠️  Missing (run setup to add)"}`);
+      console.log(`   Provider:     ${hasProvider ? "✅ Configured" : "⚠️  Missing (run setup to add)"}`);
+    } catch {
+      console.log("   Parsing:      ⚠️  Could not parse JSON");
+    }
+  }
+
+  // 2. API Key check
+  const apiKey = resolveApiKey();
+  console.log(`🔑 API Key:      ${apiKey ? `✅ Set (${apiKey.slice(0, 4)}...${apiKey.slice(-4)})` : "⚠️  Not found (FREEINFERENCE_API_KEY)"}`);
+
+  // 3. Network & Discovery check
+  try {
+    const start = Date.now();
+    const result = await discoverFreeInferenceModels({
+      apiKey,
+      timeoutMs: 5000,
+      useFallbackOnError: false,
+    });
+    const ms = Date.now() - start;
+    console.log(`🌐 API Status:    ✅ Connected to freeinference.org (${ms}ms)`);
+    console.log(`   Chat Models:  ${result.chatCount} available (${Object.keys(result.models).join(", ")})`);
+  } catch (err) {
+    console.log(`🌐 API Status:    ❌ Connection error: ${err instanceof Error ? err.message : String(err)}`);
+  }
+
+  console.log();
+}
+
 export function printHelp(): void {
   console.log(`
 opencode-freeinference CLI
 
 Usage:
+  bunx opencode-freeinference <command> [options]
   npx opencode-freeinference <command> [options]
 
 Commands:
   setup            Configure OpenCode / OpenChamber to use FreeInference
+  status           Check configuration and connection status (doctor)
   list-models      Fetch and list available chat models from FreeInference
   test-connection  Test connection to the FreeInference API endpoint
   help             Show this help information
 
 Setup Options:
-  --global, -g     Update global config (~/.config/opencode/opencode.json)
+  --global, -g     Update global config (~/.config/opencode/opencode.jsonc)
   --config, -c     Specify path to custom opencode.json
   --key, -k        Provide FREEINFERENCE_API_KEY explicitly
   --url, -u        Override FreeInference baseURL (default: https://freeinference.org/v1)
 
 Examples:
-  npx opencode-freeinference setup
-  npx opencode-freeinference setup --global
-  npx opencode-freeinference setup --key your_freeinference_key
-  npx opencode-freeinference list-models
-  npx opencode-freeinference test-connection
+  bunx opencode-freeinference setup
+  bunx opencode-freeinference setup --global
+  bunx opencode-freeinference setup --key your_freeinference_key
+  bunx opencode-freeinference status
+  bunx opencode-freeinference list-models
+  bunx opencode-freeinference test-connection
 `);
 }
