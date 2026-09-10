@@ -5,7 +5,6 @@
 [![OpenChamber Ready](https://img.shields.io/badge/OpenChamber-Compatible-emerald)](https://openchamber.dev)
 [![Tested with Bun](https://img.shields.io/badge/Tested%20with-Bun-f472b6)](https://bun.sh)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue)](https://www.typescriptlang.org)
-[![CI](https://github.com/Monecreiffe/opencode-freeinference/actions/workflows/ci.yml/badge.svg)](https://github.com/Monecreiffe/opencode-freeinference/actions/workflows/ci.yml)
 
 Official OpenCode plugin for **[FreeInference](https://freeinference.org)** integration with dynamic model discovery and automatic `@ai-sdk/openai-compatible` provider configuration.
 
