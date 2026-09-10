@@ -1,0 +1,59 @@
+{
+  "name": "opencode-freeinference",
+  "version": "0.1.0",
+  "description": "OpenCode plugin for FreeInference provider integration and automatic model discovery",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "opencode-freeinference": "./bin/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "bun build src/index.ts --outfile ./dist/index.js --target node && bun build src/cli/cli-main.ts --outfile ./dist/cli.js --target node && tsc --emitDeclarationOnly",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "prepublishOnly": "bun run build"
+  },
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "openchamber",
+    "freeinference",
+    "ai-sdk",
+    "openai-compatible",
+    "llm",
+    "model-discovery"
+  ],
+  "author": "Monecreiffe",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Monecreiffe/opencode-freeinference.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Monecreiffe/opencode-freeinference/issues"
+  },
+  "homepage": "https://github.com/Monecreiffe/opencode-freeinference#readme",
+  "dependencies": {
+    "@ai-sdk/openai-compatible": "^3.0.47"
+  },
+  "devDependencies": {
+    "@opencode-ai/plugin": "^1.18.30",
+    "@types/node": "^24.12.0",
+    "typescript": "^5.8.2"
+  }
+}
